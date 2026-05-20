@@ -640,6 +640,28 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#read_grouped_head" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        read_grouped_head
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#read_grouped_head_with_poll" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        read_grouped_head_with_poll
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#pop" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1273,6 +1295,28 @@
     <span class="md-ellipsis">
       
         read_grouped_rr_with_poll
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#read_grouped_head" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        read_grouped_head
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#read_grouped_head_with_poll" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        read_grouped_head_with_poll
       
     </span>
   </a>
@@ -2487,9 +2531,124 @@ RETURNS SETOF <a href="../types/#message_record">pgmq.message_record</a>
 <div class="codehilite"><pre><span></span><code><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">pgmq</span><span class="p">.</span><span class="n">read_grouped_rr_with_poll</span><span class="p">(</span><span class="s1">&#39;my_queue&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">);</span>
 </code></pre></div>
 
-<div class="codehilite"><pre><span></span><code> msg_id | read_ct |          enqueued_at          |         last_read_at          |              vt               |   message    |           headers           
+<div class="codehilite"><pre><span></span><code> msg_id | read_ct |          enqueued_at          |         last_read_at          |              vt               |   message    |           headers
 --------+---------+-------------------------------+-------------------------------+-------------------------------+--------------+-----------------------------
       1 |       2 | 2026-01-23 20:17:53.298176-06 | 2026-01-23 20:18:35.678351-06 | 2026-01-23 20:18:45.678351-06 | {&quot;order&quot;: 1} | {&quot;x-pgmq-group&quot;: &quot;user123&quot;}
+</code></pre></div>
+
+<hr />
+<h3 id="read_grouped_head">read_grouped_head<a class="headerlink" href="#read_grouped_head" title="Permanent link">&para;</a></h3>
+<p>Read exactly one message per FIFO group — the head (oldest, lowest <code>msg_id</code>) message in each group — across up to <code>qty</code> groups in a single operation. Only groups with a visible, unlocked head message are included.</p>
+<pre>
+ <code>
+ pgmq.read_grouped_head(
+    queue_name text,
+    vt integer,
+    qty integer
+)
+RETURNS SETOF <a href="../types/#message_record">pgmq.message_record</a>
+ </code>
+</pre>
+
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">queue_name</td>
+<td style="text-align: left;">text</td>
+<td style="text-align: left;">The name of the queue</td>
+</tr>
+<tr>
+<td style="text-align: left;">vt</td>
+<td style="text-align: left;">integer</td>
+<td style="text-align: left;">Time in seconds that the message become invisible after reading.</td>
+</tr>
+<tr>
+<td style="text-align: left;">qty</td>
+<td style="text-align: left;">integer</td>
+<td style="text-align: left;">The maximum number of groups (and therefore messages) to return.</td>
+</tr>
+</tbody>
+</table>
+<p>Example:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">pgmq</span><span class="p">.</span><span class="n">read_grouped_head</span><span class="p">(</span><span class="s1">&#39;my_queue&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">);</span>
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code> msg_id | read_ct |          enqueued_at          |         last_read_at          |              vt               |   message    |           headers
+--------+---------+-------------------------------+-------------------------------+-------------------------------+--------------+-----------------------------
+      1 |       1 | 2026-01-23 20:17:53.298176-06 | 2026-01-23 20:18:35.678351-06 | 2026-01-23 20:19:05.678351-06 | {&quot;order&quot;: 1} | {&quot;x-pgmq-group&quot;: &quot;user123&quot;}
+      4 |       1 | 2026-01-23 20:17:54.298176-06 | 2026-01-23 20:18:35.678351-06 | 2026-01-23 20:19:05.678351-06 | {&quot;order&quot;: 1} | {&quot;x-pgmq-group&quot;: &quot;user456&quot;}
+</code></pre></div>
+
+<hr />
+<h3 id="read_grouped_head_with_poll">read_grouped_head_with_poll<a class="headerlink" href="#read_grouped_head_with_poll" title="Permanent link">&para;</a></h3>
+<p>Same as read_grouped_head(). Also provides convenient long-poll functionality for FIFO queues.
+ When there are no messages available that respect FIFO ordering, the function call will wait for <code>max_poll_seconds</code> in duration before returning.</p>
+<pre>
+ <code>
+ pgmq.read_grouped_head_with_poll(
+    queue_name text,
+    vt integer,
+    qty integer,
+    max_poll_seconds integer DEFAULT 5,
+    poll_interval_ms integer DEFAULT 100
+)
+RETURNS SETOF <a href="../types/#message_record">pgmq.message_record</a>
+ </code>
+</pre>
+
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">queue_name</td>
+<td style="text-align: left;">text</td>
+<td style="text-align: left;">The name of the queue</td>
+</tr>
+<tr>
+<td style="text-align: left;">vt</td>
+<td style="text-align: left;">integer</td>
+<td style="text-align: left;">Time in seconds that the message become invisible after reading.</td>
+</tr>
+<tr>
+<td style="text-align: left;">qty</td>
+<td style="text-align: left;">integer</td>
+<td style="text-align: left;">The maximum number of groups (and therefore messages) to return.</td>
+</tr>
+<tr>
+<td style="text-align: left;">max_poll_seconds</td>
+<td style="text-align: left;">integer</td>
+<td style="text-align: left;">Time in seconds to wait for new messages to reach the queue. Defaults to 5.</td>
+</tr>
+<tr>
+<td style="text-align: left;">poll_interval_ms</td>
+<td style="text-align: left;">integer</td>
+<td style="text-align: left;">Milliseconds between the internal poll operations. Defaults to 100.</td>
+</tr>
+</tbody>
+</table>
+<p>Example:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">pgmq</span><span class="p">.</span><span class="n">read_grouped_head_with_poll</span><span class="p">(</span><span class="s1">&#39;my_queue&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">);</span>
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code> msg_id | read_ct |          enqueued_at          |         last_read_at          |              vt               |   message    |           headers
+--------+---------+-------------------------------+-------------------------------+-------------------------------+--------------+-----------------------------
+      1 |       1 | 2026-01-23 20:17:53.298176-06 | 2026-01-23 20:18:35.678351-06 | 2026-01-23 20:19:05.678351-06 | {&quot;order&quot;: 1} | {&quot;x-pgmq-group&quot;: &quot;user123&quot;}
+      4 |       1 | 2026-01-23 20:17:54.298176-06 | 2026-01-23 20:18:35.678351-06 | 2026-01-23 20:19:05.678351-06 | {&quot;order&quot;: 1} | {&quot;x-pgmq-group&quot;: &quot;user456&quot;}
 </code></pre></div>
 
 <hr />

@@ -646,6 +646,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#pgmqread_grouped_head_with_pollqueue_name-vt-qty-max_poll_seconds-poll_interval_ms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        pgmq.read_grouped_head_with_poll(queue_name, vt, qty, max_poll_seconds, poll_interval_ms)
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1195,6 +1206,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#pgmqread_grouped_head_with_pollqueue_name-vt-qty-max_poll_seconds-poll_interval_ms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        pgmq.read_grouped_head_with_poll(queue_name, vt, qty, max_poll_seconds, poll_interval_ms)
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1621,6 +1643,8 @@
 <span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">pgmq</span><span class="p">.</span><span class="n">read_grouped_head</span><span class="p">(</span><span class="s1">&#39;my_queue&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">);</span>
 </code></pre></div>
 
+<h4 id="pgmqread_grouped_head_with_pollqueue_name-vt-qty-max_poll_seconds-poll_interval_ms"><code>pgmq.read_grouped_head_with_poll(queue_name, vt, qty, max_poll_seconds, poll_interval_ms)</code><a class="headerlink" href="#pgmqread_grouped_head_with_pollqueue_name-vt-qty-max_poll_seconds-poll_interval_ms" title="Permanent link">&para;</a></h4>
+<p>Same as <code>read_grouped_head()</code> but with polling support for real-time processing.</p>
 <h3 id="utility-functions">Utility Functions<a class="headerlink" href="#utility-functions" title="Permanent link">&para;</a></h3>
 <h4 id="pgmqcreate_fifo_indexqueue_name"><code>pgmq.create_fifo_index(queue_name)</code><a class="headerlink" href="#pgmqcreate_fifo_indexqueue_name" title="Permanent link">&para;</a></h4>
 <p>Creates a GIN index on the headers column to improve FIFO read performance. Recommended when using FIFO functionality frequently.</p>
